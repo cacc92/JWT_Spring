@@ -4,6 +4,8 @@ import com.duocuc.security_jwt.models.audit.Audit;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,20 +25,22 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @NotBlank(message = "El campo username es obligatorio")
     private String username;
 
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "El campo password es obligatorio")
     private String password;
 
     @Column(nullable = false)
+    @NotNull(message = "El campo de enable es obligatorio")
     private Boolean enabled;
 
     // Esto hace que el dato no sea persistente de la base de datos si no solamente que viva
     // en la case que esto utilizando
     @Transient
     private boolean admin;
-
 
     @Embedded
     // Este elemento me permite generar
@@ -71,16 +75,6 @@ public class User {
         this.password = password;
         this.enabled = true;
     }
-
-    // public void addRole(Role profile) {
-    //     this.roles.add(profile);
-    //     profile.getUsers().add(this);
-    // }
-
-    // public void removeRole(Role profile) {
-    //    this.roles.remove(profile);
-    //     profile.getUsers().remove(this);
-    // }
 
     @Override
     public String toString() {
