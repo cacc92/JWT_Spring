@@ -1,4 +1,4 @@
-package com.duocuc.security_jwt.services;
+package com.duocuc.security_jwt.services.users;
 
 import com.duocuc.security_jwt.models.users.User;
 

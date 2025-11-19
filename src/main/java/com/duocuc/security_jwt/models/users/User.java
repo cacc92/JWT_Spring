@@ -33,16 +33,15 @@ public class User {
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "El campo password es obligatorio")
-    @Size(min=6, max=12)
+    @Size(min=6, max=120)
     private String password;
 
-    @Column(nullable = false)
-    @NotNull(message = "El campo de enable es obligatorio")
     private Boolean enabled;
 
     // Esto hace que el dato no sea persistente de la base de datos si no solamente que viva
     // en la case que esto utilizando
     @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean admin;
 
     @Embedded
@@ -50,7 +49,6 @@ public class User {
     private Audit audit = new Audit();
 
     // Relación de muchos a muchos donde un rol puede tener muchos usuarios /
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             // Le doy el nombre de la tabla intermedia que tomará el ORM
@@ -86,5 +84,10 @@ public class User {
                 ", createdAt=" + audit.getCreatedAt() +
                 ", updatedAt=" + audit.getUpdatedAt() +
                 '}';
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
     }
 }
