@@ -1,6 +1,7 @@
 package com.duocuc.security_jwt.security;
 
 import com.duocuc.security_jwt.security.filter.JwtAuthenticationFilter;
+import com.duocuc.security_jwt.security.filter.JwtValidationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests((authz) -> {
-                // De esta forma dejamo publica la ruta de usuario pero todo lo demás necesita autentificación
+                // De esta forma dejamos publica la ruta de usuario pero todo lo demás necesita autentificación
                     authz
                             // Le damos acceso público para que pueda consultar el listado de usuario
                             .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
@@ -46,6 +47,8 @@ public class SpringSecurityConfig {
                 })
                 // la configuracion del csrf la desactivamos dado que no estamos trabajando con un modelo MVC
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                // Método que me permite realizar la validación del token
+                .addFilter(new JwtValidationFilter(authenticationManager()))
                 .csrf(config ->
                         config.disable()
                 )
