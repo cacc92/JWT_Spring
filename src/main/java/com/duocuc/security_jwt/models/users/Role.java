@@ -2,12 +2,12 @@ package com.duocuc.security_jwt.models.users;
 
 import com.duocuc.security_jwt.models.audit.Audit;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="roles")
@@ -24,13 +24,14 @@ public class Role {
     @Embedded
     private Audit audit = new Audit();
 
-    // @ManyToMany(mappedBy = "roles")
-    // @JsonBackReference
-    // private Set<User> users;
+    // Se genera la relación inversa entre los usuarios y los roles
+    @JsonIgnoreProperties({"roles"})
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users;
 
 
     public Role() {
-        // this.users = new HashSet<>();
+        this.users = new ArrayList<>();
     }
 
     public Role(String name) {
@@ -48,4 +49,15 @@ public class Role {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

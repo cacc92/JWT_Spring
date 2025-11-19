@@ -1,6 +1,7 @@
 package com.duocuc.security_jwt.models.users;
 
 import com.duocuc.security_jwt.models.audit.Audit;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -11,10 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="users")
@@ -48,6 +46,8 @@ public class User {
     // Este elemento me permite generar
     private Audit audit = new Audit();
 
+    // JsonIgnoreProperties nos permite no realizar el bucle de impresión d
+    @JsonIgnoreProperties({"users"})
     // Relación de muchos a muchos donde un rol puede tener muchos usuarios /
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -89,5 +89,17 @@ public class User {
     @PrePersist
     public void prePersist() {
         this.enabled = true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 }
