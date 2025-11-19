@@ -1,8 +1,12 @@
 package com.duocuc.security_jwt.security;
 
+import com.duocuc.security_jwt.security.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,12 +16,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SpringSecurityConfig {
 
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
     // Esto nos permite devolver un script de codificador de contraseñas
     // Como necesito que sea un componente lo que estoy realizando debemos anotar con
     // con la anotación @Bean antes del método.
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception {
+        return this.authenticationConfiguration.getAuthenticationManager();
     }
 
     // Esta componente es el que nos permitirá gestionar los accesos de cada uno de los enpoint que poseemos
@@ -33,6 +45,7 @@ public class SpringSecurityConfig {
                             .anyRequest().authenticated();
                 })
                 // la configuracion del csrf la desactivamos dado que no estamos trabajando con un modelo MVC
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .csrf(config ->
                         config.disable()
                 )
