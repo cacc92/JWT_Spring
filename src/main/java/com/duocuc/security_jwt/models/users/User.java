@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,11 +27,13 @@ public class User {
 
     @Column(unique = true, nullable = false)
     @NotBlank(message = "El campo username es obligatorio")
+    @Size(min=6, max=50)
     private String username;
 
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "El campo password es obligatorio")
+    @Size(min=6, max=12)
     private String password;
 
     @Column(nullable = false)
