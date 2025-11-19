@@ -2,8 +2,8 @@ package com.duocuc.security_jwt.services;
 
 import com.duocuc.security_jwt.models.users.Role;
 import com.duocuc.security_jwt.models.users.User;
-import com.duocuc.security_jwt.repository.RoleRepository;
-import com.duocuc.security_jwt.repository.UserRepository;
+import com.duocuc.security_jwt.repositories.RoleRepository;
+import com.duocuc.security_jwt.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
