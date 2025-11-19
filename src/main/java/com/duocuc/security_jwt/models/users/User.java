@@ -59,7 +59,6 @@ public class User {
             // se genera la restricción de la llaves para que ambas llaves pasen a ser la llave única
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id","role_id"})}
     )
-    @JsonManagedReference
     private List<Role> roles;
 
 
