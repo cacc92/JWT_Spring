@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+// EnableMethodSecurity solamente se tiene que agregar si vamos a delimitar los roles de acceso desde el controlador
+// @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
 
     @Autowired
@@ -43,6 +46,13 @@ public class SpringSecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
                             // Le dejamos acceso público para poder registrarse
                             .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
+                            // De esta forma podemos ir delimitando quien puede acceder a cada endpoint
+                            // Otro método que podriamos hacer esto es a traves del controlador o service
+                            .requestMatchers(HttpMethod.POST, "/api/v1/users").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/v1/products", "/api/v1/products/{id}").hasAnyRole("ADMIN", "USER")
+                            .requestMatchers(HttpMethod.POST, "/api/v1/products").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.PUT, "/api/v1/products/{id}").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "/api/v1/products/{id}").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 // la configuracion del csrf la desactivamos dado que no estamos trabajando con un modelo MVC

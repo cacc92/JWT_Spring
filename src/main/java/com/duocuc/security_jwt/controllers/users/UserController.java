@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.findAll());
     }
 
+    // @PreAuthorize("hasRole('ADMIN')")
     // Antes del request body se realiza la validación que el body que esta llegando corresponda a la estructura de
     // datos que se encuentra definida en la clase que se esta refiriendo USER
     // Esta clase me va a permitir crear usuarios admin
